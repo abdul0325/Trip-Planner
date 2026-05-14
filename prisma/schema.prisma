@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// User Model
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique 
+  name          String     
+  password      String     
+  role          String     @default("user")
+  isBlocked     Boolean    @default(false)
+  avatar        Json?
+  coverImage    Json?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  trips         Trip[]
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model Trip {
+  id              String    @id @default(cuid())
+
+  title           String
+
+  description     String?
+
+  destination     String
+
+  startDate       DateTime
+
+  endDate         DateTime
+
+  budget          Float?
+
+  status          String    @default("draft")
+
+  // NEW FIELDS
+  itineraryData   Json?
+
+  interests       String?
+
+  travelType      String?
+
+  duration        Int?
+
+  userId          String
+
+  createdAt       DateTime  @default(now())
+
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+
+  @@index([createdAt])
+
+  @@index([status])
+}

@@ -1,0 +1,563 @@
+"use client"
+
+import { useState } from "react"
+import { motion } from "framer-motion"
+
+import {
+  Plane,
+  Wallet,
+  Calendar,
+  Heart,
+  Users,
+  Building2,
+  Sparkles,
+  Globe2,
+} from "lucide-react"
+
+const interests = [
+  "Adventure",
+  "Food",
+  "Luxury",
+  "Shopping",
+  "Photography",
+  "Nature",
+  "History",
+  "Nightlife",
+  "Beach",
+  "Culture",
+]
+
+const budgets = [
+  {
+    label: "$500",
+    value: 500,
+  },
+
+  {
+    label: "$1000",
+    value: 1000,
+  },
+
+  {
+    label: "$1500",
+    value: 1500,
+  },
+
+  {
+    label: "$2000",
+    value: 2000,
+  },
+
+  {
+    label: "$3000",
+    value: 3000,
+  },
+
+  {
+    label: "$5000",
+    value: 5000,
+  },
+]
+
+const durations = [
+  {
+    label: "3 Days",
+    value: 3,
+  },
+
+  {
+    label: "5 Days",
+    value: 5,
+  },
+
+  {
+    label: "7 Days",
+    value: 7,
+  },
+
+  {
+    label: "10 Days",
+    value: 10,
+  },
+];
+
+const travelTypes = [
+  "Solo",
+  "Couple",
+  "Family",
+  "Friends",
+  "Business",
+]
+
+interface FormData {
+  destination: string
+  duration: number
+  budget: number
+  travelType: string
+  accommodation: string
+  travelPace: string
+  interests: string[]
+  notes: string
+}
+
+export default function AIPreferenceForm({
+  onGenerate,
+}: {
+  onGenerate: (data: any) => void
+}) {
+
+  const [formData, setFormData] = useState<FormData>({
+    destination: "",
+
+    duration: 5,
+
+    budget: 1000,
+
+    travelType: "",
+
+    accommodation: "",
+
+    travelPace: "",
+
+    interests: [] as string[],
+
+    notes: "",
+  })
+
+  const toggleInterest = (interest: string) => {
+
+    setFormData((prev) => ({
+      ...prev,
+
+      interests: prev.interests.includes(interest)
+        ? prev.interests.filter((i) => i !== interest)
+        : [...prev.interests, interest],
+    }))
+  }
+
+  return (
+    <div
+      className="
+        max-w-5xl
+        mx-auto
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/5
+        backdrop-blur-xl
+        p-6
+        sm:p-8
+        lg:p-10
+      "
+    >
+
+      {/* HEADER */}
+      <div className="text-center mb-10">
+
+        <div
+          className="
+            w-20
+            h-20
+            rounded-3xl
+            bg-gradient-to-r
+            from-blue-500
+            to-purple-600
+            flex
+            items-center
+            justify-center
+            mx-auto
+            mb-6
+            shadow-xl
+            shadow-blue-500/20
+          "
+        >
+          <Sparkles className="w-10 h-10 text-white" />
+        </div>
+
+        <h2
+          className="
+            text-3xl
+            sm:text-4xl
+            font-black
+            bg-gradient-to-r
+            from-white
+            via-blue-100
+            to-purple-300
+            bg-clip-text
+            text-transparent
+          "
+        >
+          Plan Your Perfect Journey
+        </h2>
+
+        <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+          Tell our AI about your dream trip and receive
+          a personalized luxury itinerary.
+        </p>
+      </div>
+
+      <div className="space-y-10">
+
+        {/* DESTINATION */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-3 text-white font-medium">
+
+            <Globe2 className="w-5 h-5 text-blue-400" />
+
+            Destination
+          </label>
+
+          <input
+            type="text"
+            placeholder="Where do you want to go?"
+            value={formData.destination}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                destination: e.target.value,
+              })
+            }
+            className="
+              w-full
+              h-14
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/5
+              px-5
+              text-white
+              placeholder:text-gray-500
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500
+            "
+          />
+        </div>
+
+        {/* DURATION */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-4 text-white font-medium">
+
+            <Calendar className="w-5 h-5 text-cyan-400" />
+
+            Trip Duration
+          </label>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+
+            {durations.map((duration) => (
+
+              <motion.button
+                key={duration.value}
+
+                whileHover={{ scale: 1.03 }}
+
+                whileTap={{ scale: 0.97 }}
+
+                type="button"
+
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    duration: duration.value,
+                  })
+                }
+
+                className={`
+      h-14
+      rounded-2xl
+      border
+      transition-all
+      font-semibold
+
+      ${formData.duration === duration.value
+                    ? `
+            border-blue-500
+            bg-blue-500/20
+            text-white
+          `
+                    : `
+            border-white/10
+            bg-white/5
+            text-gray-300
+          `
+                  }
+    `}
+              >
+                {duration.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* BUDGET */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-4 text-white font-medium">
+
+            <Wallet className="w-5 h-5 text-green-400" />
+
+            Budget Style
+          </label>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+            {budgets.map((budget) => (
+
+              <motion.button
+                type="button"
+                key={budget.value}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    budget: budget.value,
+                  })
+                }
+                className={`
+          relative
+          overflow-hidden
+          rounded-3xl
+          border
+          p-6
+          text-left
+          transition-all
+
+          ${formData.budget === budget.value
+                    ? `
+                border-white/30
+                bg-white/10
+                shadow-xl
+              `
+                    : `
+                border-white/10
+                bg-white/5
+              `
+                  }
+        `}
+              >
+
+                {/* GRADIENT */}
+                <div
+                  className={`
+            absolute
+            inset-0
+            opacity-20
+            bg-gradient-to-r
+            ${budget.color}
+          `}
+                />
+
+                {/* CONTENT */}
+                <div className="relative z-10">
+
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {budget.label}
+                  </h3>
+
+                  <p className="text-gray-300 text-sm">
+                    {budget.range}
+                  </p>
+
+                  <div
+                    className="
+              mt-5
+              inline-flex
+              items-center
+              px-3
+              py-1
+              rounded-full
+              bg-white/10
+              text-xs
+              text-white
+            "
+                  >
+                    AI Optimized
+                  </div>
+                </div>
+
+                {/* ACTIVE BORDER */}
+                {formData.budget === budget.value && (
+
+                  <div
+                    className="
+              absolute
+              top-3
+              right-3
+              w-3
+              h-3
+              rounded-full
+              bg-green-400
+              shadow-lg
+              shadow-green-400/50
+            "
+                  />
+                )}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* INTERESTS */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-4 text-white font-medium">
+
+            <Heart className="w-5 h-5 text-pink-400" />
+
+            Interests
+          </label>
+
+          <div className="flex flex-wrap gap-3">
+
+            {interests.map((interest) => (
+
+              <motion.button
+                key={interest}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  toggleInterest(interest)
+                }
+                className={`
+                  px-5
+                  py-3
+                  rounded-full
+                  border
+                  transition-all
+
+                  ${formData.interests.includes(interest)
+                    ? `
+                        border-pink-500
+                        bg-pink-500/20
+                        text-white
+                      `
+                    : `
+                        border-white/10
+                        bg-white/5
+                        text-gray-300
+                      `
+                  }
+                `}
+              >
+                {interest}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* TRAVEL TYPE */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-4 text-white font-medium">
+
+            <Users className="w-5 h-5 text-yellow-400" />
+
+            Travel Type
+          </label>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+
+            {travelTypes.map((type) => (
+
+              <motion.button
+                key={type}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    travelType: type,
+                  })
+                }
+                className={`
+                  h-14
+                  rounded-2xl
+                  border
+                  transition-all
+
+                  ${formData.travelType === type
+                    ? `
+                        border-yellow-500
+                        bg-yellow-500/20
+                        text-white
+                      `
+                    : `
+                        border-white/10
+                        bg-white/5
+                        text-gray-300
+                      `
+                  }
+                `}
+              >
+                {type}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* NOTES */}
+        <div>
+
+          <label className="flex items-center gap-2 mb-3 text-white font-medium">
+
+            <Plane className="w-5 h-5 text-purple-400" />
+
+            Extra AI Instructions
+          </label>
+
+          <textarea
+            rows={5}
+            placeholder="Tell AI anything special about your trip..."
+            value={formData.notes}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                notes: e.target.value,
+              })
+            }
+            className="
+              w-full
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/5
+              p-5
+              text-white
+              placeholder:text-gray-500
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500
+            "
+          />
+        </div>
+
+        {/* SUBMIT */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => onGenerate(formData)}
+          className="
+            w-full
+            h-16
+            rounded-2xl
+            bg-gradient-to-r
+            from-blue-500
+            via-cyan-500
+            to-purple-600
+            text-white
+            text-lg
+            font-bold
+            shadow-2xl
+            shadow-blue-500/20
+          "
+        >
+          Generate AI Itinerary
+        </motion.button>
+      </div>
+    </div>
+  )
+}
