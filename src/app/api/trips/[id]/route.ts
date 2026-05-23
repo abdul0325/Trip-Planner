@@ -1,3 +1,4 @@
+//src/app/api/trips/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthFromRequest, createAuthErrorResponse } from '@/lib/auth-middleware';
@@ -87,6 +88,16 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
           ? null
           : undefined;
 
+    const duration =
+      parsedBody.duration !== undefined
+        ? Number(parsedBody.duration)
+        : undefined;
+
+    const itineraryData =
+      typeof parsedBody.itineraryData === "string"
+        ? parsedBody.itineraryData
+        : undefined;
+
     const updatedTrip = await prisma.trip.update({
       where: { id: tripId },
       data: {
@@ -100,6 +111,13 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
             budget === null
               ? null
               : Number(budget),
+        }),
+        ...(duration !== undefined && {
+          duration,
+        }),
+
+        ...(itineraryData && {
+          itineraryData,
         }),
         ...(status && { status }),
       },

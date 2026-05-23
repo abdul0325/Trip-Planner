@@ -55,14 +55,42 @@ export async function POST(request: NextRequest) {
     const auth = await getAuthFromRequest(request);
     const body = await request.json() as unknown;
 
-    const { title, description, destination, startDate, endDate, budget, status } = body as {
+    const {
+      title,
+      description,
+      destination,
+      startDate,
+      endDate,
+      budget,
+      status,
+      itineraryData,
+      interests,
+      travelType,
+      duration,
+
+    } = body as {
+
       title: string;
+
       description?: string;
+
       destination: string;
+
       startDate: string;
+
       endDate: string;
+
       budget?: string | number;
+
       status?: string;
+
+      itineraryData?: any;
+
+      interests?: string;
+
+      travelType?: string;
+
+      duration?: number;
     };
 
     // Validate required fields with better error messages
@@ -126,6 +154,19 @@ export async function POST(request: NextRequest) {
 
         status,
 
+        itineraryData:
+          itineraryData || null,
+
+        interests:
+          interests || null,
+
+        travelType:
+          travelType || null,
+
+        duration:
+          duration
+            ? Number(duration)
+            : null,
         userId: auth.userId,
       },
     });

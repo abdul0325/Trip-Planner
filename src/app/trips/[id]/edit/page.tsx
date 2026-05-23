@@ -52,6 +52,8 @@ import { useEffect } from "react";
 
 import { motion } from "framer-motion";
 
+import { aiItineraryGenerator } from "@/utils/ai-itinerary-generator";
+
 const updateTripSchema = z.object({
   title: z
     .string()
@@ -76,6 +78,12 @@ const updateTripSchema = z.object({
   budget: z.number().optional(),
 
   status: z.string(),
+
+  itineraryData:
+    z.string().optional(),
+
+  duration:
+    z.number().optional(),
 });
 
 type UpdateTripSchema =
@@ -214,23 +222,110 @@ export default function EditTripPage() {
       },
     });
 
-  const onSubmit = (
+  const onSubmit = async (
     data: UpdateTripSchema
   ) => {
 
-    if (
-      new Date(data.endDate) <=
-      new Date(data.startDate)
-    ) {
+    try {
+
+      if (
+        new Date(data.endDate) <=
+        new Date(data.startDate)
+      ) {
+
+        toast.error(
+          "End date must be after start date"
+        );
+
+        return;
+      }
+
+      // CALCULATE DURATION
+      const duration =
+        Math.ceil(
+          (
+            new Date(data.endDate).getTime() -
+            new Date(data.startDate).getTime()
+          ) /
+          (1000 * 60 * 60 * 24)
+        );
+
+      // DETECT IMPORTANT CHANGES
+      const importantChanges =
+        trip.startDate.split("T")[0] !== data.startDate ||
+        trip.endDate.split("T")[0] !== data.endDate ||
+        Number(trip.budget) !== Number(data.budget);
+
+      let itineraryData =
+        trip.itineraryData;
+
+      // REGENERATE ITINERARY
+      if (importantChanges) {
+
+        toast.loading(
+          "Regenerating AI itinerary..."
+        );
+
+        const regeneratedItinerary =
+          await aiItineraryGenerator.generateItinerary({
+
+            destination:
+              trip.destination,
+
+            budget:
+              Number(data.budget) || 1000,
+
+            duration,
+
+            interests:
+              trip.interests
+                ? typeof trip.interests === "string"
+                  ? JSON.parse(trip.interests)
+                  : trip.interests
+                : [],
+
+            travelType:
+              trip.travelType || "Luxury",
+
+            notes:
+              data.description || "",
+
+            startDate:
+              data.startDate,
+
+            endDate:
+              data.endDate,
+          });
+
+        itineraryData =
+          JSON.stringify(
+            regeneratedItinerary
+          );
+
+        toast.dismiss();
+
+        toast.success(
+          "AI itinerary regenerated!"
+        );
+      }
+
+      updateMutation.mutate({
+
+        ...data,
+
+        duration,
+
+        itineraryData,
+      });
+
+    } catch (error) {
+
+      toast.dismiss();
 
       toast.error(
-        "End date must be after start date"
+        "Failed to regenerate itinerary"
       );
-
-      return;
     }
-
-    updateMutation.mutate(data);
   };
 
   if (isLoading) {
@@ -551,34 +646,20 @@ export default function EditTripPage() {
                           <FileText className="w-4 h-4" />
 
                           <span className="text-sm font-medium">
-                            Trip Title
-                          </span>
-                        </div>
-
-                        <PrimaryFormInput
-                          label=""
-                          name="title"
-                          control={form.control}
-                        />
-                      </div>
-
-                      {/* DESTINATION */}
-                      <div className="md:col-span-2">
-
-                        <div className="mb-3 flex items-center gap-2 text-purple-300">
-
-                          <MapPin className="w-4 h-4" />
-
-                          <span className="text-sm font-medium">
-                            Destination
-                          </span>
+  Destination
+</span>
                         </div>
 
                         <PrimaryFormInput
                           label=""
                           name="destination"
                           control={form.control}
+                          disabled
                         />
+
+                        <p className="text-xs text-gray-400 mt-2">
+                          Destination cannot be changed after trip creation.
+                        </p>
                       </div>
 
                       {/* START */}

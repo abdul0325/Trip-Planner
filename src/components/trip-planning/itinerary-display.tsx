@@ -1,3 +1,4 @@
+//src/components/trip-planning/itinerary-display.tsx
 "use client"
 
 import { motion } from "framer-motion"
@@ -14,7 +15,8 @@ import {
   Utensils,
   Camera,
   CheckCircle,
-  Brain
+  Brain,
+  Sparkles
 } from "lucide-react"
 
 import { toast } from "sonner"
@@ -455,6 +457,29 @@ export default function ItineraryDisplay({
                 {itinerary?.days?.length || 0} Days
               </span>
             </div>
+            <div className="flex items-center gap-1">
+
+              <Clock className="w-4 h-4" />
+
+              <span>
+
+                {itinerary?.startDate
+                  ? new Date(
+                    itinerary.startDate
+                  ).toLocaleDateString()
+                  : "Start Date"}
+
+                {" - "}
+
+                {itinerary?.endDate
+                  ? new Date(
+                    itinerary.endDate
+                  ).toLocaleDateString()
+                  : "End Date"}
+
+              </span>
+            </div>
+
 
             <div className="flex items-center gap-1">
               <DollarSign className="w-4 h-4" />
@@ -478,30 +503,6 @@ export default function ItineraryDisplay({
             gap-3
           "
         >
-
-          <motion.button
-            whileHover={{
-              scale: 1.03,
-            }}
-            whileTap={{
-              scale: 0.97,
-            }}
-            onClick={onEdit}
-            className="
-              h-11
-              px-5
-              rounded-xl
-              glass-card
-              flex
-              items-center
-              gap-2
-              hover:bg-white/20
-              transition-colors
-            "
-          >
-            <Edit3 className="w-4 h-4" />
-            <span>Edit</span>
-          </motion.button>
 
           <motion.button
             whileHover={{
@@ -577,14 +578,19 @@ export default function ItineraryDisplay({
                 border-2
                 transition-all
                 flex-shrink-0
-                ${
-                  activeDay === day.day
-                    ? `
-                      border-blue-500
-                      bg-blue-50
-                      dark:bg-blue-900/20
-                    `
-                    : `
+                ${activeDay === day.day
+  ? `
+      border-blue-500
+
+      bg-transparent
+
+      shadow-lg
+      shadow-blue-500/10
+
+      ring-1
+      ring-blue-500/20
+    `
+                  : `
                       border-white/20
                       dark:border-white/10
                     `
@@ -595,22 +601,40 @@ export default function ItineraryDisplay({
               <div className="text-center">
 
                 <p
-                  className="
-                    text-sm
-                    font-semibold
-                    text-gray-900
-                    dark:text-white
-                  "
+                  className={`
+    text-sm
+    font-semibold
+
+    ${activeDay === day.day
+                      ? `
+            dark:text-white
+text-gray-900
+          `
+                      : `
+            text-gray-700
+            dark:text-white
+          `
+                    }
+  `}
                 >
                   Day {day.day}
                 </p>
 
                 <p
-                  className="
-                    text-xs
-                    text-gray-500
-                    dark:text-gray-400
-                  "
+                  className={`
+    text-xs
+
+    ${activeDay === day.day
+                      ? `
+            dark:text-gray-300
+text-gray-700
+          `
+                      : `
+            text-gray-500
+            dark:text-gray-400
+          `
+                    }
+  `}
                 >
                   {day.title}
                 </p>
@@ -665,7 +689,29 @@ export default function ItineraryDisplay({
               {/* MAIN */}
 
               <div className="xl:col-span-2 space-y-6">
+                <div className="mb-6">
 
+                  <div
+                    className="
+      inline-flex
+      items-center
+      gap-2
+      px-4
+      py-2
+      rounded-full
+      bg-blue-500/10
+      border
+      border-blue-500/20
+      text-blue-300
+      text-sm
+      font-medium
+    "
+                  >
+                    <Sparkles className="w-4 h-4" />
+
+                    {day.theme || day.title}
+                  </div>
+                </div>
                 {/* ACTIVITIES */}
 
                 <div>
@@ -718,10 +764,10 @@ export default function ItineraryDisplay({
                 {(day.meals || []).length >
                   0 && (
 
-                  <div>
+                    <div>
 
-                    <h3
-                      className="
+                      <h3
+                        className="
                         text-xl
                         font-semibold
                         text-gray-900
@@ -731,45 +777,45 @@ export default function ItineraryDisplay({
                         items-center
                         gap-2
                       "
-                    >
+                      >
 
-                      <Utensils
-                        className="
+                        <Utensils
+                          className="
                           w-5
                           h-5
                           text-orange-600
                           dark:text-orange-400
                         "
-                      />
+                        />
 
-                      <span>Dining</span>
-                    </h3>
+                        <span>Dining</span>
+                      </h3>
 
-                    <div
-                      className="
+                      <div
+                        className="
                         grid
                         grid-cols-1
                         md:grid-cols-2
                         gap-4
                       "
-                    >
+                      >
 
-                      {(day.meals || []).map(
-                        (
-                          meal: any,
-                          index: number
-                        ) => (
+                        {(day.meals || []).map(
+                          (
+                            meal: any,
+                            index: number
+                          ) => (
 
-                          <MealCard
-                            key={`${meal.type}-${index}`}
-                            meal={meal}
-                            index={index}
-                          />
-                        )
-                      )}
+                            <MealCard
+                              key={`${meal.type}-${index}`}
+                              meal={meal}
+                              index={index}
+                            />
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
           </motion.div>

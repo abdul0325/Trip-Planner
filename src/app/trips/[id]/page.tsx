@@ -77,12 +77,28 @@ export default function TripDetailPage() {
       TripService.getById(tripId),
   });
 
-  const itinerary =
-    trip?.itineraryData
-      ? typeof trip.itineraryData === "string"
-        ? JSON.parse(trip.itineraryData)
-        : trip.itineraryData
-      : null;
+  let itinerary = null;
+
+  try {
+
+    itinerary =
+      trip?.itineraryData
+        ? typeof trip.itineraryData === "string"
+          ? JSON.parse(
+            trip.itineraryData
+          )
+          : trip.itineraryData
+        : null;
+
+  } catch (error) {
+
+    console.error(
+      "Failed to parse itinerary:",
+      error
+    );
+
+    itinerary = null;
+  }
 
   const tripDays =
     itinerary?.days?.length ||
@@ -102,15 +118,18 @@ export default function TripDetailPage() {
         )
         : 0
     );
-
   const totalActivities =
     itinerary?.days?.reduce(
-      (acc: number, day: any) =>
+      (
+        acc: number,
+        day: any
+      ) =>
         acc +
-        (day.activities?.length || 0),
+        (
+          day.activities?.length || 0
+        ),
       0
     ) || 0;
-
   const estimatedBudget =
     trip?.budget || "Custom";
 
@@ -944,75 +963,241 @@ export default function TripDetailPage() {
               </motion.div>
             )}
           </div>
-
           {/* ITINERARY */}
-          {itinerary && (
+{itinerary?.days?.length > 0 && (
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.2,
-              }}
+  <motion.div
+    initial={{
+      opacity: 0,
+      y: 20,
+    }}
+
+    animate={{
+      opacity: 1,
+      y: 0,
+    }}
+
+    transition={{
+      delay: 0.2,
+    }}
+
+    className="w-full"
+  >
+
+    <Card
+  className="
+    itinerary-dark-wrapper
+
+    relative
+    overflow-hidden
+
+    rounded-2xl
+    sm:rounded-3xl
+
+    border
+    border-white/10
+
+    bg-[#071120]/95
+
+    backdrop-blur-xl
+
+    shadow-2xl
+    shadow-black/30
+
+    transition-all
+    duration-300
+  "
+>
+
+      {/* BACKGROUND GLOW */}
+      <div
+        className="
+          absolute
+          inset-0
+          pointer-events-none
+
+          bg-gradient-to-br
+          from-cyan-500/5
+          via-transparent
+          to-purple-500/5
+        "
+      />
+
+      {/* TOP BORDER */}
+      <div
+        className="
+          absolute
+          top-0
+          left-0
+          w-full
+          h-[1px]
+
+          bg-gradient-to-r
+          from-transparent
+          via-cyan-400
+          to-transparent
+
+          opacity-80
+        "
+      />
+
+      {/* HEADER */}
+      <CardHeader
+        className="
+          relative
+
+          border-b
+          border-white/10
+
+          px-4
+          sm:px-6
+          lg:px-8
+
+          py-5
+          sm:py-6
+          lg:py-7
+
+          bg-gradient-to-r
+          from-blue-500/5
+          via-transparent
+          to-purple-500/5
+        "
+      >
+
+        <div
+          className="
+            flex
+            flex-col
+            gap-5
+
+            lg:flex-row
+            lg:items-center
+            lg:justify-between
+          "
+        >
+
+          {/* LEFT */}
+          <div className="min-w-0">
+
+            <CardTitle
+              className="
+                text-2xl
+                sm:text-3xl
+                lg:text-4xl
+
+                font-black
+                leading-tight
+                tracking-tight
+
+                bg-gradient-to-r
+                from-white
+                via-blue-100
+                to-purple-300
+
+                bg-clip-text
+                text-transparent
+
+                break-words
+              "
             >
+              AI Generated Itinerary
+            </CardTitle>
 
-              <Card
-                className="
-                  rounded-3xl
-                  border
-                  border-white/10
-                  bg-white/5
-                  backdrop-blur-xl
-                  shadow-2xl
-                  shadow-black/20
-                  overflow-hidden
-                "
-              >
+            <CardDescription
+              className="
+                mt-3
 
-                <CardHeader
-                  className="
-                    border-b
-                    border-white/10
-                    bg-gradient-to-r
-                    from-blue-500/10
-                    to-purple-500/10
-                  "
-                >
+                text-sm
+                sm:text-base
 
-                  <CardTitle
-                    className="
-                      text-2xl
-                      sm:text-3xl
-                      font-black
-                      bg-gradient-to-r
-                      from-white
-                      via-blue-100
-                      to-purple-300
-                      bg-clip-text
-                      text-transparent
-                    "
-                  >
-                    AI Generated Itinerary
-                  </CardTitle>
+                leading-relaxed
 
-                  <CardDescription className="text-gray-400">
-                    Smart travel plan generated by AI
-                  </CardDescription>
-                </CardHeader>
+                text-gray-300
 
-                <CardContent className="p-6 sm:p-8">
+                max-w-2xl
+              "
+            >
+              Personalized luxury travel experience
+              generated dynamically according to
+              your selected dates, budget,
+              interests, and travel preferences.
+            </CardDescription>
+          </div>
 
-                  <ItineraryDisplay itinerary={itinerary} />
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
+          {/* BADGE */}
+          <div
+            className="
+              inline-flex
+              items-center
+              justify-center
+              gap-2
+
+              self-start
+              lg:self-auto
+
+              px-4
+              sm:px-5
+
+              py-2
+              sm:py-2.5
+
+              rounded-full
+
+              border
+              border-cyan-500/20
+
+              bg-gradient-to-r
+              from-cyan-500/10
+              to-blue-500/10
+
+              text-cyan-200
+
+              text-xs
+              sm:text-sm
+
+              font-semibold
+
+              whitespace-nowrap
+
+              backdrop-blur-xl
+            "
+          >
+
+            <Sparkles className="w-4 h-4 shrink-0" />
+
+            AI Powered Plan
+          </div>
+        </div>
+      </CardHeader>
+
+      {/* CONTENT */}
+     <CardContent
+  className="
+    itinerary-dark-wrapper
+
+    relative
+
+    p-2
+    sm:p-4
+    lg:p-6
+  "
+>
+
+        <div
+          className="
+            overflow-hidden
+            rounded-2xl
+          "
+        >
+
+          <ItineraryDisplay
+            itinerary={itinerary}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+)}
         </div>
 
         {/* DELETE DIALOG */}

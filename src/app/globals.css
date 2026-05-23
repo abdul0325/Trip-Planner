@@ -171,3 +171,29 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.itinerary-dark-wrapper {
+  color: white;
+}
+
+.itinerary-dark-wrapper h1,
+.itinerary-dark-wrapper h2,
+.itinerary-dark-wrapper h3,
+.itinerary-dark-wrapper h4,
+.itinerary-dark-wrapper h5,
+.itinerary-dark-wrapper h6,
+.itinerary-dark-wrapper p,
+.itinerary-dark-wrapper span,
+.itinerary-dark-wrapper div {
+  color: inherit;
+}
+
+.itinerary-dark-wrapper .glass-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+}
+
+.itinerary-dark-wrapper button {
+  color: white;
+}

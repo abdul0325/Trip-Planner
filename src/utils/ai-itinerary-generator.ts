@@ -1,4 +1,5 @@
 export interface TripPreferences {
+
   destination: string
 
   budget: number
@@ -10,6 +11,10 @@ export interface TripPreferences {
   travelType: string
 
   notes?: string
+
+  startDate: string
+
+  endDate: string
 }
 
 export interface ItineraryData {
@@ -111,13 +116,18 @@ class AIItineraryGenerator {
         ) || 7;
 
       const startDate =
-        new Date();
+        preferences.startDate
+          ? new Date(
+            preferences.startDate
+          )
+          : new Date();
 
       const endDate =
-        new Date(
-          startDate.getTime() +
-          (totalDays * 86400000)
-        );
+        preferences.endDate
+          ? new Date(
+            preferences.endDate
+          )
+          : new Date();
 
       return {
         title:
@@ -127,10 +137,10 @@ class AIItineraryGenerator {
           preferences.destination,
 
         startDate:
-          startDate.toISOString(),
+          preferences.startDate,
 
         endDate:
-          endDate.toISOString(),
+          preferences.endDate,
 
         budget:
           preferences.budget || 1000,
@@ -199,7 +209,20 @@ class AIItineraryGenerator {
       };
     }
 
-    return response.json();
+    const data = await response.json();
+
+    return {
+
+      ...data,
+
+      startDate:
+        data.startDate ||
+        preferences.startDate,
+
+      endDate:
+        data.endDate ||
+        preferences.endDate,
+    };
   }
 }
 
