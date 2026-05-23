@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Brain, Sun, Moon, Plus, LayoutDashboard, Map, LogOut } from "lucide-react"
+import { Brain, Sun, Moon, Plus, LayoutDashboard, Map, LogOut, Home } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -21,6 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/trips",     label: "My Trips",  icon: Map },
+    { href: "/",          label: "Home",      icon: Home },
   ]
 
   return (
