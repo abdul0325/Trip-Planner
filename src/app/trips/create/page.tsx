@@ -44,6 +44,8 @@ interface TripPreferences {
   transportation: string
   groupSize: string
   season: string
+  startDate: string
+  endDate: string
 }
 
 export default function CreateTripPage() {
@@ -104,17 +106,19 @@ export default function CreateTripPage() {
             preferences?.duration
           ) || 7
 
-        const fallbackStartDate =
-          new Date()
-
-        const fallbackEndDate =
-          new Date(
-            fallbackStartDate.getTime() +
-            (
-              totalDays *
-              86400000
+        const selectedStartDate =
+          preferences?.startDate
+            ? new Date(
+              preferences.startDate
             )
-          )
+            : new Date()
+
+        const selectedEndDate =
+          preferences?.endDate
+            ? new Date(
+              preferences.endDate
+            )
+            : new Date()
 
         await TripService.create({
 
@@ -129,12 +133,10 @@ export default function CreateTripPage() {
             itinerary.destination,
 
           startDate:
-            itinerary.startDate ||
-            fallbackStartDate.toISOString(),
+            selectedStartDate.toISOString(),
 
           endDate:
-            itinerary.endDate ||
-            fallbackEndDate.toISOString(),
+            selectedEndDate.toISOString(),
 
           budget:
             Number(

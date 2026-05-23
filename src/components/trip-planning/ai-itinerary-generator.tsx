@@ -32,6 +32,8 @@ interface FormTripPreferences {
   transportation: string
   groupSize: string
   season: string
+  startDate: string
+  endDate: string
 }
 
 interface GenerationStep {
@@ -271,13 +273,19 @@ export default function AIItineraryGenerator({
     const days =
       Number(prefs?.duration) || 7
 
-    const startDate = new Date()
+    const startDate =
+      preferences.startDate
+        ? new Date(
+          preferences.startDate
+        )
+        : new Date()
 
     const endDate =
-      new Date(
-        startDate.getTime() +
-        (totalDays * 86400000)
-      )
+      preferences.endDate
+        ? new Date(
+          preferences.endDate
+        )
+        : new Date()
 
     return {
       id: `itinerary_${Date.now()}`,
@@ -288,9 +296,11 @@ export default function AIItineraryGenerator({
       destination:
         prefs?.destination || "Your Destination",
 
-      startDate: startDate.toISOString(),
+      startDate:
+        preferences?.startDate || undefined,
 
-      endDate: endDate.toISOString(),
+      endDate:
+        preferences?.endDate || undefined,
 
       budget:
         Number(prefs?.budget) || 1000,

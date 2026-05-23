@@ -47,6 +47,8 @@ Destination: ${destination}
 
 Duration: ${totalDays} Days
 
+Travel Dates: ${body.startDate} to ${body.endDate}
+
 - Generate EXACTLY ${totalDays} days
 - The "days" array MUST contain EXACTLY ${totalDays} objects
 - Do NOT generate fewer days

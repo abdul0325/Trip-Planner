@@ -9,7 +9,6 @@ import {
   Calendar,
   Heart,
   Users,
-  Building2,
   Sparkles,
   Globe2,
 } from "lucide-react"
@@ -98,6 +97,8 @@ interface FormData {
   travelPace: string
   interests: string[]
   notes: string
+  startDate: string
+  endDate: string
 }
 
 export default function AIPreferenceForm({
@@ -109,7 +110,7 @@ export default function AIPreferenceForm({
   const [formData, setFormData] = useState<FormData>({
     destination: "",
 
-    duration: 5,
+    duration: 0,
 
     budget: 1000,
 
@@ -122,8 +123,33 @@ export default function AIPreferenceForm({
     interests: [] as string[],
 
     notes: "",
-  })
 
+    startDate: "",
+    endDate: "",
+  })
+  const calculateDuration = (
+    start: string,
+    end: string
+  ) => {
+
+    if (!start || !end)
+      return 0
+
+    const startDate =
+      new Date(start)
+
+    const endDate =
+      new Date(end)
+
+    const diffTime =
+      endDate.getTime() -
+      startDate.getTime()
+
+    return Math.ceil(
+      diffTime /
+      (1000 * 60 * 60 * 24)
+    )
+  }
   const toggleInterest = (interest: string) => {
 
     setFormData((prev) => ({
@@ -278,8 +304,7 @@ export default function AIPreferenceForm({
     "
           />
         </div>
-
-        {/* DURATION */}
+        {/* TRAVEL DATES */}
         <div className="space-y-4">
 
           <label
@@ -294,97 +319,107 @@ export default function AIPreferenceForm({
       dark:text-white
     "
           >
+            <Calendar className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
 
-            <Calendar
-              className="
-        w-5
-        h-5
-        text-cyan-600
-        dark:text-cyan-400
-      "
-            />
-
-            Trip Duration
+            Travel Dates
           </label>
 
-          <div
-            className="
-      grid
-      grid-cols-2
-      sm:grid-cols-3
-      lg:grid-cols-5
-      gap-4
-    "
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            {durations.map((duration) => (
+            {/* START DATE */}
+            <div>
+              <input
+                type="date"
 
-              <motion.button
-                key={duration.value}
+                min={new Date().toISOString().split("T")[0]}
 
-                whileHover={{
-                  scale: 1.03,
-                }}
+                value={formData.startDate}
 
-                whileTap={{
-                  scale: 0.97,
-                }}
+                onChange={(e) => {
 
-                type="button"
+                  const newStartDate =
+                    e.target.value
 
-                onClick={() =>
                   setFormData({
                     ...formData,
-                    duration: duration.value,
-                  })
-                }
 
-                className={`
+                    startDate: newStartDate,
+
+                    duration: calculateDuration(
+                      newStartDate,
+                      formData.endDate
+                    ),
+                  })
+                }}
+
+                className="
+          w-full
           h-14
           rounded-2xl
           border
-          font-semibold
-          text-sm
-          transition-all
-          shadow-sm
+          border-gray-300
+          dark:border-white/10
+          bg-white
+          dark:bg-white/5
+          px-5
+          text-gray-900
+          dark:text-white
+          focus:outline-none
+          focus:ring-2
+          focus:ring-blue-500
+        "
+              />
+            </div>
 
-          ${formData.duration === duration.value
+            {/* END DATE */}
+            <div>
+              <input
+                type="date"
 
-                    ? `
-                border-blue-500
-                bg-gradient-to-r
-                from-blue-500
-                to-purple-600
-                text-white
-                shadow-lg
-              `
+                min={
+                  formData.startDate ||
+                  new Date().toISOString().split("T")[0]
+                }
 
-                    : `
-                border-gray-300
-                dark:border-white/10
+                value={formData.endDate}
 
-                bg-white
-                dark:bg-white/5
+                onChange={(e) => {
 
-                text-gray-800
-                dark:text-gray-300
+                  const newEndDate =
+                    e.target.value
 
-                hover:border-blue-400
-                dark:hover:border-white/20
+                  setFormData({
+                    ...formData,
 
-                hover:bg-gray-50
-                dark:hover:bg-white/10
-              `
-                  }
-        `}
-              >
+                    endDate: newEndDate,
 
-                {duration.label}
-              </motion.button>
-            ))}
+                    duration: calculateDuration(
+                      formData.startDate,
+                      newEndDate
+                    ),
+                  })
+                }}
+
+                className="
+          w-full
+          h-14
+          rounded-2xl
+          border
+          border-gray-300
+          dark:border-white/10
+          bg-white
+          dark:bg-white/5
+          px-5
+          text-gray-900
+          dark:text-white
+          focus:outline-none
+          focus:ring-2
+          focus:ring-blue-500
+        "
+              />
+            </div>
           </div>
         </div>
-
         {/* BUDGET */}
         <div>
 
@@ -743,7 +778,37 @@ export default function AIPreferenceForm({
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => onGenerate(formData)}
+          onClick={() => {
+
+            if (!formData.destination) {
+              return alert(
+                "Please enter destination"
+              )
+            }
+
+            if (!formData.startDate) {
+              return alert(
+                "Please select start date"
+              )
+            }
+
+            if (!formData.endDate) {
+              return alert(
+                "Please select end date"
+              )
+            }
+
+            if (
+              new Date(formData.endDate) <=
+              new Date(formData.startDate)
+            ) {
+              return alert(
+                "End date must be after start date"
+              )
+            }
+
+            onGenerate(formData)
+          }}
           className="
             w-full
             h-16

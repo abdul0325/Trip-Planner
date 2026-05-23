@@ -25,7 +25,6 @@ export default function PremiumNavbar() {
     { label: "Dashboard", href: "/dashboard" },
     { label: "My Trips", href: "/trips" },
     { label: "AI Planner", href: "/trips/create" },
-    { label: "Explore", href: "/destinations" },
   ]
 
   return (

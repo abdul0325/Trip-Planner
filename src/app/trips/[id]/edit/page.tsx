@@ -218,6 +218,18 @@ export default function EditTripPage() {
     data: UpdateTripSchema
   ) => {
 
+    if (
+      new Date(data.endDate) <=
+      new Date(data.startDate)
+    ) {
+
+      toast.error(
+        "End date must be after start date"
+      );
+
+      return;
+    }
+
     updateMutation.mutate(data);
   };
 
