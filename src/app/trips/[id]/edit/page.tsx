@@ -646,8 +646,8 @@ export default function EditTripPage() {
                           <FileText className="w-4 h-4" />
 
                           <span className="text-sm font-medium">
-  Destination
-</span>
+                            Destination
+                          </span>
                         </div>
 
                         <PrimaryFormInput

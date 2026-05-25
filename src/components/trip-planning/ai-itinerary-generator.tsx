@@ -177,13 +177,17 @@ export default function AIItineraryGenerator({
           Number(preferences.duration) || 7
 
         const startDate =
-          new Date()
+          preferences.startDate
+            ? new Date(preferences.startDate)
+            : new Date()
 
         const endDate =
-          new Date(
-            startDate.getTime() +
-            ((totalDays - 1) * 86400000)
-          )
+          preferences.endDate
+            ? new Date(preferences.endDate)
+            : new Date(
+              startDate.getTime() +
+              ((totalDays - 1) * 86400000)
+            )
 
         const transformedPreferences = {
           destination:
