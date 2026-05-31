@@ -15,7 +15,7 @@ export interface Trip {
 
   status: string
 
-  // IMPORTANT
+  // IMPORTANT note
 
   itineraryData?: string
 
