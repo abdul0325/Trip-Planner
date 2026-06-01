@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { verifyToken, extractTokenFromHeader, JWTPayload } from './jwt';
 
 /**
- * Extract and verify JWT from requests.
+ * Extracting and verify JWT from requests
  */
 export async function getAuthFromRequest(request: NextRequest): Promise<JWTPayload> {
   const authHeader = request.headers.get('authorization');
