@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+// component
 export const useInView = <T extends HTMLElement>(
   options?: IntersectionObserverInit
 ) => {
