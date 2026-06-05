@@ -2,5 +2,5 @@ install deps
 npm i
 
 run prisma migs
-add .env 
+add .env  
 run build and enjoy
