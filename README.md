@@ -1,4 +1,4 @@
-install deps
+install dependencies
 npm i
 
 run prisma migs
